@@ -1,0 +1,82 @@
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200, 301, 302]
+      method: GET
+      preferred_ip_protocol: ip4
+
+  http_2xx_with_ssl:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200, 301, 302]
+      method: GET
+      fail_if_ssl: false
+      fail_if_not_ssl: true
+      preferred_ip_protocol: ip4
+
+  # Internal probes (LAN) — self-signed TLS is OK, we don't validate cert
+  # Accepts 401 too: Proxmox 8.x+ requires auth even on /version, but the fact
+  # that the server responded (not timeout/refused) is already a valid healthcheck.
+  http_2xx_no_ssl_verify:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200, 301, 302, 401]
+      method: GET
+      fail_if_ssl: false
+      fail_if_not_ssl: false
+      tls_config:
+        insecure_skip_verify: true
+      preferred_ip_protocol: ip4
+
+  icmp:
+    prober: icmp
+    timeout: 3s
+    icmp:
+      preferred_ip_protocol: ip4
+
+  tcp_connect:
+    prober: tcp
+    timeout: 5s
+
+  # k3s apiserver health check — without TLS validation (internal cluster cert)
+  # Accepts 200 and 401: /healthz returns 200 with auth, 401 without auth, but
+  # any HTTP response = apiserver is alive. Timeout/refused = dead.
+  k3s_healthz:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      valid_status_codes: [200, 401]
+      tls_config:
+        insecure_skip_verify: true
+      preferred_ip_protocol: ip4
+
+  # kubelet health check (port 10250) — for workers/agents
+  # Returns 401 without auth (server is responding). More useful than ICMP
+  # because it confirms the kubelet is alive, not just the host.
+  kubelet_healthz:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      valid_status_codes: [200, 401]
+      tls_config:
+        insecure_skip_verify: true
+      preferred_ip_protocol: ip4
+
+  # etcd health check (port 2379) — for masters
+  # Checks /health: returns 200 with JSON {"health":"true"} if healthy.
+  # Detects quorum loss, leader election issues, etc.
+  etcd_health:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      valid_status_codes: [200]
+      tls_config:
+        insecure_skip_verify: true
+      preferred_ip_protocol: ip4

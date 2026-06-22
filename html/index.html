@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>status.jerb.net — open monitoring</title>
+    <meta name="description" content="O que está rodando agora na minha infra. Atualizado direto do Prometheus sem mock.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="statusbar">
+        <div class="left">
+            <span class="seg"><span class="dot live"></span><strong data-i18n="sb.monitor">monitor</strong>: <em data-i18n="sb.monitor.value">online</em></span>
+            <span class="seg"><strong data-i18n="sb.stack">stack</strong>: <span data-i18n="sb.stack.value">prometheus + blackbox</span></span>
+            <span class="seg"><strong data-i18n="sb.updated">updated</strong>: <span id="updated">--</span></span>
+        </div>
+        <div class="right">
+            <span class="seg"><a href="https://jerb.net" target="_blank" rel="noopener">jerb.net →</a></span>
+        </div>
+    </div>
+
+    <nav class="termnav">
+        <span><span class="prompt">jerb</span><span class="path">@monitor</span>:~$</span>
+        <a href="./" class="active" data-i18n="nav.status">./status</a>
+        <a href="https://jerb.net" target="_blank" rel="noopener" data-i18n="nav.portfolio">./portfolio</a>
+        <a href="https://github.com/jerbao/open-monitoring" target="_blank" rel="noopener" data-i18n="nav.source">./source</a>
+        <div class="lang-switcher">
+            <button type="button" data-lang="pt">PT</button>
+            <button type="button" data-lang="en">EN</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <pre class="ascii">
+                                                    _  __            _
+  ____  ____  ___  ____       ____ ___  ____  ____ (_)/ /_____  ____(_)____  ____ _
+ / __ \/ __ \/ _ \/ __ \_____/ __ `__ \/ __ \/ __ \/ / __/ __ \/ ___/ / __ \/ __ `/
+/ /_/ / /_/ /  __/ / / /____/ / / / / / /_/ / / / / / /_/ /_/ / /  / / / / / /_/ /
+\____/ .___/\___/_/ /_/    /_/ /_/ /_/\____/_/ /_/_/\__/\____/_/  /_/_/ /_/\__, /
+    /_/                                                                   /____/
+            </pre>
+            <h1>open<span class="accent">-</span>monitoring</h1>
+            <p class="lede" data-i18n="hero.lede">
+                O que está rodando agora na minha infra.
+            </p>
+            <p style="color: var(--fg-dim); font-size: 0.78rem;">
+                <span data-i18n="hero.meta.refresh">Auto-refresh a cada</span> <span class="kbd">60s</span> ·
+                <span data-i18n="hero.meta.probe">Probe ativo a cada</span> <span class="kbd">30s</span> ·
+                <span data-i18n="hero.meta.retention">Retenção</span> <span class="kbd">90d</span>
+            </p>
+        </section>
+
+        <section class="block">
+            <h2 data-i18n="tbl.title">cat /api/status</h2>
+            <div class="table-wrap">
+                <table class="status" id="status-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="tbl.col.service">Serviço</th>
+                            <th data-i18n="tbl.col.status">Status</th>
+                            <th data-i18n="tbl.col.uptime24">Uptime 24h</th>
+                            <th data-i18n="tbl.col.uptime7">7d</th>
+                            <th data-i18n="tbl.col.uptime30">30d</th>
+                            <th data-i18n="tbl.col.uptime90">90d</th>
+                            <th data-i18n="tbl.col.ssl">SSL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="status-body">
+                        <tr><td colspan="7" style="text-align: center; color: var(--fg-dim);" data-i18n="tbl.loading">carregando…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <span data-i18n="footer.text">monitoring via prometheus + blackbox-exporter</span>
+        ·
+        <span><span data-i18n="footer.made">made by</span> <a href="https://jerb.net" target="_blank" rel="noopener" data-i18n="footer.author">jerb</a></span>
+        ·
+        <span data-i18n="footer.oss">open source</span>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

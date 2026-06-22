@@ -1,0 +1,73 @@
+services:
+  prometheus:
+    image: prom/prometheus:v3.4.0
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+      - '--storage.tsdb.retention.size=10GB'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    volumes:
+      - ./prometheus:/etc/prometheus:ro,z
+      - prometheus_data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    networks:
+      - monitor
+    depends_on:
+      - blackbox
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  blackbox:
+    image: prom/blackbox-exporter:v0.28.0
+    container_name: blackbox
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/blackbox_exporter/blackbox.yml'
+    volumes:
+      - ./blackbox:/etc/blackbox_exporter:ro,z
+    ports:
+      - "127.0.0.1:9115:9115"
+    networks:
+      - monitor
+    # ICMP precisa de NET_RAW + cap_net_raw
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW
+    security_opt:
+      - no-new-privileges:true
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: status-backend
+    restart: unless-stopped
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - STATIC_DIR=/app/static
+      - UNIFI_HELPER_URL=http://host.docker.internal:9000
+    extra_hosts:
+      # On Linux without Docker Desktop, host.docker.internal doesn't resolve
+      # natively. host-gateway points to the default bridge gateway.
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./html:/app/static:ro,z
+    ports:
+      - "8000:8000"   # listens on 0.0.0.0:8000 so HAProxy on workers can reach it via LAN
+    networks:
+      - monitor
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus_data:
+
+networks:
+  monitor:
+    driver: bridge

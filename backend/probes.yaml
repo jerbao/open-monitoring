@@ -1,0 +1,67 @@
+probes:
+  # Public sites (HTTPS + SSL expiry)
+  https://chat.jerb.net:
+    name: "chat.jerb.net"
+    group: "Sites"
+    check_ssl: true
+  https://pharmaervas.com.br:
+    name: "pharmaervas.com.br"
+    group: "Sites"
+    check_ssl: true
+  https://www.pharmaervas.com.br:
+    name: "www.pharmaervas.com.br"
+    group: "Sites"
+    check_ssl: true
+
+  # k3s cluster — all via kubelet :10250/healthz
+  https://192.168.88.51:10250/healthz:
+    name: "master-1"
+    group: "Cluster k3s"
+  https://192.168.88.52:10250/healthz:
+    name: "master-2"
+    group: "Cluster k3s"
+  https://192.168.88.53:10250/healthz:
+    name: "master-3"
+    group: "Cluster k3s"
+  https://192.168.88.54:10250/healthz:
+    name: "worker-1"
+    group: "Cluster k3s"
+  https://192.168.88.55:10250/healthz:
+    name: "worker-2"
+    group: "Cluster k3s"
+  https://192.168.88.56:10250/healthz:
+    name: "worker-3"
+    group: "Cluster k3s"
+  https://192.168.88.57:10250/healthz:
+    name: "worker-4"
+    group: "Cluster k3s"
+  https://192.168.88.58:10250/healthz:
+    name: "worker-5"
+    group: "Cluster k3s"
+
+  # Proxmox API endpoints
+  https://192.168.88.40:8006/api2/json/version:
+    name: "pve0"
+    group: "Proxmox VE"
+  https://192.168.88.41:8006/api2/json/version:
+    name: "pve1"
+    group: "Proxmox VE"
+  https://192.168.88.42:8006/api2/json/version:
+    name: "pve2"
+    group: "Proxmox VE"
+  https://192.168.88.43:8006/api2/json/version:
+    name: "pve3"
+    group: "Proxmox VE"
+  https://192.168.88.44:8006/api2/json/version:
+    name: "pve4"
+    group: "Proxmox VE"
+  https://192.168.88.45:8007/api2/json/version:
+    name: "pbs"
+    group: "Proxmox VE"
+
+  # UniFi Controller — unifi_controller_up metric exposed by the authenticated
+  # helper (open-monitoring-auth). Prometheus scrape via
+  # job 'unifi_helper' at host.docker.internal:9000/metrics.
+  unifi-controller:
+    name: "UniFi Controller"
+    group: "Network"

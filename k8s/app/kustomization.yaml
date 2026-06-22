@@ -1,0 +1,23 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap-probes.yaml
+  - hpa.yaml
+
+configMapGenerator:
+  - name: open-monitoring-html
+    files:
+      - index.html=html/index.html
+      - app.js=html/app.js
+      - styles.css=html/styles.css
+      - i18n.js=html/i18n.js
+    options:
+      disableNameSuffixHash: false   # hash in name forces rollout when html/ changes
+
+# Image pinned by tag/sha via override. In CI, adjust:
+#   images:
+#   - name: ghcr.io/jerbao/open-monitoring-backend
+#     newName: ghcr.io/jerbao/open-monitoring-backend
+#     newTag: <sha256-or-tag>
+
+namespace: monitoring
