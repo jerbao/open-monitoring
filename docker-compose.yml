@@ -14,7 +14,7 @@ services:
       - ./prometheus:/etc/prometheus:ro,z
       - prometheus_data:/prometheus
     ports:
-      - "127.0.0.1:9090:9090"
+      - "9090:9090"
     networks:
       - monitor
     depends_on:
